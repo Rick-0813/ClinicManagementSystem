@@ -51,7 +51,7 @@ struct Bill{
 };
 
 
-//decalre here other .cpp file can access it using
+//decalre here so other .cpp file can access it using extern
 vector<Patient> patientList;
 vector<Appointment> appointmentList;
 vector<Medicine> medicineList;
@@ -68,7 +68,7 @@ void billMenu();
 //Utilizy Function
 void pauseScreen() {
     cout << "\n Press Enter to Continue ....";
-    cin.ignore(1000, '\n');
+    cin.ignore(1000, '\n');  //use ignore to clear the input buffer
 }
 
 void displayMainMenu() {
@@ -101,6 +101,7 @@ int getValidChoice (int minOption , int maxOption){
         cout << " Enter your choice (1-5) : ";
         cin >> choice;
 
+        //check input is a number or not (e.g. input is a)
         if(cin.fail()){
             cin.clear();
             cin.ignore(1000,'\n');
