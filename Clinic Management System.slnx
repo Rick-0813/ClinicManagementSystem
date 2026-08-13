@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Clinic Management System/Clinic Management System.vcxproj" />
+  <Project Path="Clinic Management System/Clinic Management System.vcxproj" Id="1d8a34be-3564-4f73-bd4a-cb470ce19cb6" />
 </Solution>
