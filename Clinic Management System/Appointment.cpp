@@ -1,9 +1,10 @@
-#include<iostream>
-#include<string>
+#include <iostream>
+#include <string>
 #include <vector>
+
 using namespace std;
 
-struct Appointment{
+struct Appointment {
     int appointmentID;
     int patientID;
     string doctorName;
@@ -12,12 +13,11 @@ struct Appointment{
     string status;
 };
 
-//extern mean this vector already exist in ClinicManagementSystem.cpp
 extern vector<Appointment> appointmentList;
 
-void appointmentMenu(){
-    cout << " +----------------------------------------+\n";
-    cout << " |         APPOINTMENT SCHEDULE            |\n";
-    cout << " +----------------------------------------+\n";
-    cout << "\n [Dennis] System in progress...\n";
+void appointmentMenu() {
+    cout << "\n\t========================================\n";
+    cout << "\t          APPOINTMENT SCHEDULE          \n";
+    cout << "\t========================================\n";
+    cout << "\n\t[Dennis] System in progress...\n";
 }
