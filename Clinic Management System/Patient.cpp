@@ -28,39 +28,54 @@ void loadPatientsFromFile();
 void savePatientsToFile();
 
 void patientMenu() {
-    loadPatientsFromFile(); 
-    int choice = 0;
-    do {
-        cout << "\n\t======================================================\n";
-        cout << "\t               PATIENT MANAGEMENT                     \n";
-        cout << "\t======================================================\n";
-        cout << "\t [ 1 ] Register New Patient Profile\n";
-        cout << "\t [ 2 ] Consultation Diagnosis & Update History\n";
-        cout << "\t [ 3 ] Display All Patients Information\n";
-        cout << "\t [ 4 ] Generate Medical Certificate (MC)\n";
-        cout << "\t [ 5 ] Return to Main Menu\n";
-        cout << "\t------------------------------------------------------\n";
 
-        choice = getValidatedInt("\tEnter your choice (1-5): ", 1, 5);
+    loadPatientsFromFile();
+    int choice;
+
+    do {
+        cout << "\n +-----------------------------------------+\n";
+        cout << " |          PATIENT MANAGEMENT             |\n";
+        cout << " +-----------------------------------------+\n";
+        cout << " | [1] Register New Patient                |\n";
+        cout << " | [2] Consultation & Medical History      |\n";
+        cout << " | [3] Display All Patients                |\n";
+        cout << " | [4] Generate Medical Certificate (MC)   |\n";
+        cout << " | [5] Back to Main Menu                   |\n";
+        cout << " +-----------------------------------------+\n";
+
+        choice = getValidatedInt(" Enter your choice (1-5): ", 1, 5);
+        cout << "\n";
 
         switch (choice) {
-            case 1:
-                registerPatient();
-                break;
-            case 2:
-                addConsultationRecord();
-                break;
-            case 3:
-                displayAllPatients();
-                break;
-            case 4:
-                generateMC();
-                break;
-            case 5:
-                cout << "\n\tReturning to Main Menu...\n";
-                break;
+
+        case 1:
+            registerPatient();
+            break;
+
+        case 2:
+            addConsultationRecord();
+            break;
+
+        case 3:
+            displayAllPatients();
+            break;
+
+        case 4:
+            generateMC();
+            break;
+
+        case 5:
+            cout << "\n Returning to Main Menu...\n";
+            break;
         }
+
     } while (choice != 5);
+}
+
+string formatPatientID(int id) {
+    stringstream ss;
+    ss << "P" << setfill('0') << setw(4) << id;
+    return ss.str();
 }
 
 Patient* findPatientByID(int id) {
@@ -80,7 +95,7 @@ int getValidatedInt(string prompt, int minVal, int maxVal) {
             cin.ignore(1000, '\n');
             return value;
         }
-        cout << "\t[ERROR] Invalid input! Please enter a valid number between " 
+        cout << " [ERROR] Invalid input! Please enter a valid number between " 
              << setfill('0') << setw(4) << minVal << " and " << setw(4) << maxVal << setfill(' ') << ".\n";
         cin.clear();
         cin.ignore(1000, '\n');
@@ -90,7 +105,7 @@ int getValidatedInt(string prompt, int minVal, int maxVal) {
 void savePatientsToFile() {
     ofstream outFile("patients.txt");
     if (!outFile.is_open()) {
-        cout << "\t[ERROR] Failed to save patient records to file!\n";
+        cout << " [ERROR] Failed to save patient records to file!\n";
         return;
     }
 
@@ -154,23 +169,25 @@ void loadPatientsFromFile() {
 
 void registerPatient() {
     Patient newPatient;
-    cout << "\n\t---------------- REGISTER NEW PATIENT ----------------\n";
+    cout << "\n +-------------------------------------------+\n";
+    cout << " |           REGISTER NEW PATIENT            |\n";
+    cout << " +-------------------------------------------+\n";
     
     while (true) {
-        newPatient.patientID = getValidatedInt("\tEnter Patient ID (0001 - 9999): ", 1, 9999);
+        newPatient.patientID = getValidatedInt(" Enter Patient ID (0001 - 9999): ", 1, 9999);
         if (findPatientByID(newPatient.patientID) == nullptr) {
             break;
         }
-        cout << "\t[ERROR] Patient ID " << setfill('0') << setw(4) << newPatient.patientID 
-             << setfill(' ') << " already exists! Try another ID.\n";
+        cout << " [ERROR] Patient ID " << formatPatientID(newPatient.patientID)
+            << " already exists! Try another ID.\n";
     }
 
-    cout << "\tEnter Patient Full Name : ";
+    cout << " Enter Patient Full Name : ";
     getline(cin, newPatient.patientName);
 
-    newPatient.age = getValidatedInt("\tEnter Patient Age (0 - 120): ", 0, 120);
+    newPatient.age = getValidatedInt(" Enter Patient Age (0 - 120): ", 0, 120);
 
-    cout << "\tEnter Known Allergies (e.g. Penicillin / None): ";
+    cout << " Enter Known Allergies (e.g. Penicillin / None): ";
     getline(cin, newPatient.allergy);
 
     newPatient.medicalHistory.push_back("Initial Registration & Health Profile Created.");
@@ -178,104 +195,124 @@ void registerPatient() {
     patientList.push_back(newPatient);
     savePatientsToFile(); 
 
-    cout << "\n\t[SUCCESS] Patient " << newPatient.patientName 
-         << " (ID: " << setfill('0') << setw(4) << newPatient.patientID << setfill(' ') 
-         << ") registered & saved to patients.txt successfully!\n";
+    cout << "\n +--------------------------------------------+\n";
+    cout << " |                REGISTRATION                |\n";
+    cout << " +--------------------------------------------+\n";
+    cout << " | Patient Name : "<< left << setw(27)<< newPatient.patientName<< " |\n";
+    cout << " | Patient ID   : "<< left << setw(27)<< formatPatientID(newPatient.patientID)<< " |\n";
+    cout << " | Age          : "<< left << setw(27)<< newPatient.age<< " |\n";
+    cout << " | Allergy      : "<< left << setw(27)<< newPatient.allergy<< " |\n";
+    cout << " +--------------------------------------------+\n";
+    cout << " [SUCCESS] Patient registered successfully!\n";
+    cout << " [INFO] Patient record saved to patients.txt.\n";
 }
 
 void addConsultationRecord() {
-    cout << "\n\t------------ CONSULTATION & MEDICAL HISTORY ------------\n";
+    cout << "\n +--------------------------------------------------------+\n";
+    cout << " |               CONSULTATION & HISTORY                   |\n";
+    cout << " +--------------------------------------------------------+\n";
     if (patientList.empty()) {
-        cout << "\t[INFO] No patients registered yet. Please register a patient first.\n";
+        cout << " [INFO] No patients registered yet. Please register a patient first.\n";
         return;
     }
 
-    int searchID = getValidatedInt("\tEnter Patient ID (0001 - 9999): ", 1, 9999);
+    int searchID = getValidatedInt(" Enter Patient ID (0001 - 9999): ", 1, 9999);
     Patient* patient = findPatientByID(searchID);
 
     if (patient == nullptr) {
-        cout << "\t[ERROR] Patient with ID " << setfill('0') << setw(4) << searchID 
-             << setfill(' ') << " not found.\n";
+        cout << " [ERROR] Patient with ID " << formatPatientID(searchID) << " not found.\n";
         return;
     }
 
-    cout << "\n\tPatient ID   : " << setfill('0') << setw(4) << patient->patientID << setfill(' ') << "\n";
-    cout << "\tPatient Name : " << patient->patientName << "\n";
-    cout << "\tAge          : " << patient->age << "\n";
-    cout << "\tAllergies    : " << patient->allergy << "\n";
-    cout << "\t--- Past Medical History ---\n";
-    for (size_t i = 0; i < patient->medicalHistory.size(); i++) {
-        cout << "\t  [" << (i + 1) << "] " << patient->medicalHistory[i] << "\n";
-    }
+    cout << "\n +--------------------------------------------------------+\n";
+    cout << " |                  PATIENT INFORMATION                   |\n";
+    cout << " +--------------------------------------------------------+\n";
+    cout << " | Patient ID   : "<< left << setw(39)<< formatPatientID(patient->patientID)<< " |\n";
+    cout << " | Patient Name : "<< left << setw(39)<< patient->patientName<< " |\n";
+    cout << " | Age          : "<< left << setw(39)<< patient->age<< " |\n";
+    cout << " | Allergies    : "<< left << setw(39)<< patient->allergy<< " |\n";
+    cout << " +--------------------------------------------------------+\n";
+    cout << " |                     MEDICAL HISTORY                    |\n";
+    cout << " +--------------------------------------------------------+\n";
 
-    cout << "\n\tEnter New Diagnosis / Consultation Notes: ";
+    for (size_t i = 0; i < patient->medicalHistory.size(); i++) {
+
+        cout << " | [" << i + 1 << "] "
+            << left << setw(34)
+            << patient->medicalHistory[i]
+            << "     |\n";
+    }
+    cout << " +--------------------------------------------------------+\n";
+
+    cout << " Enter New Diagnosis / Consultation Notes: ";
     string newDiagnosis;
     getline(cin, newDiagnosis);
 
     if (!newDiagnosis.empty()) {
         patient->medicalHistory.push_back(newDiagnosis);
         savePatientsToFile(); 
-        cout << "\n\t[SUCCESS] Medical history updated and saved to file!\n";
+        cout << "\n [SUCCESS] Medical history updated and saved to file!\n";
     } else {
-        cout << "\n\t[WARNING] Empty notes. Consultation entry cancelled.\n";
+        cout << "\n [WARNING] Empty notes. Consultation entry cancelled.\n";
     }
 }
 
 void displayAllPatients() {
-    cout << "\n\t===============================================================================\n";
-    cout << "\t                             PATIENT RECORDS LIST                              \n";
-    cout << "\t===============================================================================\n";
+    cout << "\n +--------------------------------------------------------------------------------+\n";
+    cout << " |                             PATIENT RECORDS                                    |\n";
+    cout << " +--------------------------------------------------------------------------------+\n";
 
     if (patientList.empty()) {
-        cout << "\t [INFO] No patient records found in the system.\n";
-        cout << "\t===============================================================================\n";
+        cout << " [INFO] No patient records found in the system.\n";
+        cout << " +--------------------------------------------------------------------------------+\n";
         return;
     }
-
-    cout << "\t" << left << setw(8)  << "ID"
-         << setw(22) << "Name"
-         << setw(6)  << "Age"
-         << setw(18) << "Allergies"
-         << "Latest Medical Note\n";
-    cout << "\t" << string(79, '-') << "\n";
+    cout << " | " << left
+        << setw(10) << "Patient ID"
+        << " | " << setw(19) << "Name"
+        << " | " << setw(5) << "Age"
+        << " | " << setw(14) << "Allergy "
+        << " | " << setw(18) << "Latest History   "
+        << " |\n";
+    cout << " +--------------------------------------------------------------------------------+\n";
 
     for (size_t i = 0; i < patientList.size(); i++) {
         string lastHistory = patientList[i].medicalHistory.empty() ? "N/A" : patientList[i].medicalHistory.back();
-        if (lastHistory.length() > 24) {
-            lastHistory = lastHistory.substr(0, 21) + "...";
+        if (lastHistory.length() > 18) {
+            lastHistory = lastHistory.substr(0, 15) + "...";
         }
 
-        stringstream idSS;
-        idSS << setfill('0') << setw(4) << patientList[i].patientID;
+        string idSS = formatPatientID(patientList[i].patientID);
 
-        cout << "\t" << left << setw(8)  << idSS.str()
-             << setw(22) << (patientList[i].patientName.length() > 20 ? patientList[i].patientName.substr(0, 17) + "..." : patientList[i].patientName)
-             << setw(6)  << patientList[i].age
-             << setw(18) << (patientList[i].allergy.length() > 16 ? patientList[i].allergy.substr(0, 13) + "..." : patientList[i].allergy)
-             << lastHistory << "\n";
+        cout << " | " << left << setw(10) << idSS
+            << " | " << setw(19) << (patientList[i].patientName.length() > 19 ? patientList[i].patientName.substr(0, 14) + "..." : patientList[i].patientName)
+            << " | " << setw(5) << patientList[i].age
+            << " | " << setw(14) << (patientList[i].allergy.length() > 15 ? patientList[i].allergy.substr(0, 12) + "..." : patientList[i].allergy)
+            << " | " << setw(18) << lastHistory << " |\n";
     }
-    cout << "\t===============================================================================\n";
-    cout << "\t Total Registered Patients: " << patientList.size() << "\n";
+    cout << " +--------------------------------------------------------------------------------+\n";
+    cout << " Total Registered Patients: " << patientList.size() << "\n";
 }
 
 void generateMC() {
-    cout << "\n\t---------------- GENERATE MEDICAL CERTIFICATE (MC) ----------------\n";
+    cout << "\n +---------------------------------------------+\n";
+    cout << " |       GENERATE MEDICAL CERTIFICATE          |\n";
+    cout << " +---------------------------------------------+\n";
     if (patientList.empty()) {
-        cout << "\t[INFO] No patients available in the system.\n";
+        cout << " [INFO] No patients available in the system.\n";
         return;
     }
 
-    int searchID = getValidatedInt("\tEnter Patient ID (0001 - 9999): ", 1, 9999);
+    int searchID = getValidatedInt(" Enter Patient ID (0001 - 9999): ", 1, 9999);
     Patient* patient = findPatientByID(searchID);
 
     if (patient == nullptr) {
-        cout << "\t[ERROR] Patient with ID " << setfill('0') << setw(4) << searchID 
-             << setfill(' ') << " not found.\n";
+        cout << " [ERROR] Patient with ID " << formatPatientID(searchID) << " not found.\n";
         return;
     }
 
-    int mcDays = getValidatedInt("\tEnter number of MC days granted (1 - 14): ", 1, 14);
-    cout << "\tEnter Attending Doctor's Name: Dr. ";
+    int mcDays = getValidatedInt(" Enter number of MC days granted (1 - 14): ", 1, 14);
+    cout << " Enter Attending Doctor's Name: Dr. ";
     string doctorName;
     getline(cin, doctorName);
 
@@ -283,38 +320,36 @@ void generateMC() {
         doctorName = "Derrick Tan";
     }
 
-    cout << "\tEnter Medical Reason / Diagnosis: ";
+    cout << " Enter Medical Reason / Diagnosis: ";
     string reason;
     getline(cin, reason);
     if (reason.empty()) {
         reason = "Acute Upper Respiratory Tract Infection";
     }
 
-    stringstream idSS;
-    idSS << setfill('0') << setw(4) << patient->patientID;
-
-    cout << "\n\t" << string(66, '=') << "\n";    
-    cout << "\t|" << setw(50) << right << "HARMONY CLINIC MEDICAL CERTIFICATE" << setw(16) << " |\n";
-    cout << "\t|" << setw(45) << right << "Kuala Lumpur, Malaysia" << setw(21) << " |\n";
-    cout << "\t" << string(66, '=') << "\n";
-    cout << "\t" << left << setw(20) << " Date Issued"     << ": " << "25/08/2026" << "\n";
-    cout << "\t" << left << setw(20) << " Patient Name"    << ": " << patient->patientName << "\n";
-    cout << "\t" << left << setw(20) << " Patient ID"      << ": " << idSS.str() << "\n";
-    cout << "\t" << left << setw(20) << " Age"             << ": " << patient->age << "\n";
-    cout << "\t" << left << setw(20) << " Known Allergies" << ": " << patient->allergy << "\n";
-    cout << "\t" << string(66, '-') << "\n";
-    cout << "\t This is to certify that the patient named above is unfit\n";
-    cout << "\t for work / school duties for a period of " << mcDays << " day(s).\n\n";
-    cout << "\t" << left << setw(20) << " Reason / Diagnosis" << ": " << reason << "\n";
-    cout << "\t" << left << setw(20) << " Attending Doctor"   << ": Dr. " << doctorName << "\n";
-    cout << "\t" << string(66, '_') << "\n\n";
+    cout << "\n +-------------------------------------------------------------------+\n";
+    cout << " |                   HARMONY CLINIC                                  |\n";
+    cout << " |                MEDICAL CERTIFICATE                                |\n";
+    cout << " +-------------------------------------------------------------------+\n";
+    cout << " | Date Issued      : "<< left << setw(45)<< "25/08/2026"<< "  |\n";
+    cout << " | Patient Name     : "<< left << setw(45)<< patient->patientName<< "  |\n";
+    cout << " | Patient ID       : "<< left << setw(45)<< formatPatientID(patient->patientID)<< "  |\n";
+    cout << " | Age              : "<< left << setw(45)<< patient->age<< "  |\n";
+    cout << " | Known Allergies  : "<< left << setw(45)<< patient->allergy<< "  |\n";
+    cout << " +-------------------------------------------------------------------+\n";
+    cout << " | This is to certify that the patient named above is unfit          |\n";
+    cout << " | for work / school duties for a period of "<< left << setw(10)<< mcDays<< " day(s).       |\n";
+    cout << " +-------------------------------------------------------------------+\n";
+    cout << " | Reason / Diagnosis : "<< left << setw(44)<< reason<< " |\n";
+    cout << " | Attending Doctor   : Dr. "<< left << setw(40)<< doctorName<< " |\n";
+    cout << " +-------------------------------------------------------------------+\n";
 
     string sigLine = "Signature: [ Dr. " + doctorName + " ]";
-    cout << "\t" << right << setw(40) << sigLine << "\n";    
-    cout << "\t" << right << setw(49) << "(Certified Medical Practitioner)\n";
-    cout << "\t" << string(66, '=') << "\n";
+    cout << " | "<< right << setw(64)<< sigLine<< "  |\n";
+    cout << " | "<< right << setw(64)<< "(Certified Medical Practitioner)"<< "  |\n";
+    cout << " +-------------------------------------------------------------------+\n";
 
     patient->medicalHistory.push_back("MC Issued: " + to_string(mcDays) + " day(s) by Dr. " + doctorName + " (Reason: " + reason + ")");
     savePatientsToFile();
-    cout << "\n\t[SUCCESS] MC generated and saved to patients.txt!\n";
+    cout << "\n [SUCCESS] MC generated and saved to patients.txt!\n";
 }

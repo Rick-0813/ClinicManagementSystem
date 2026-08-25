@@ -33,6 +33,7 @@ struct BillItem{
     int medicineID;
     string medicineName;
     int quantity;
+    double unitPrice;
     double subtotal;
 };
 
@@ -44,10 +45,10 @@ struct Bill{
     double totalAmount;
     double taxAmount;
     double discountAmount;
+    double finalAmount;
     double amountPaid;
     double change;
     string date;
-    string paymentMethod;
     string status;
 };
 
@@ -124,7 +125,10 @@ int getValidChoice (int minOption , int maxOption){
 }
 
 int main () {
-
+    patientList.push_back({ 1, "John Tan", 70, "None", {} });
+    patientList.push_back({ 2, "Mary Lee", 30, "None", {} });
+    medicineList.push_back({ 1, "Panadol", 6.50, 10 });
+    medicineList.push_back({ 2, "Vitamin C", 10.00, 15 });
     int choice;
 
     do{
