@@ -48,6 +48,7 @@ struct Bill{
     double change;
     string date;
     string paymentMethod;
+    string status;
 };
 
 
