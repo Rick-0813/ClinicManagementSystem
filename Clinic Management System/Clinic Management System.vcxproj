@@ -146,6 +146,7 @@
     <ClCompile Include="Pharmacy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Appointment.h" />
     <ClInclude Include="bill.h" />
     <ClInclude Include="Header.h" />
   </ItemGroup>
