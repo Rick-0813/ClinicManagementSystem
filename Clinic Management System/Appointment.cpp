@@ -28,6 +28,7 @@ void makeAppointment();
 void rescheduleAppointment();
 void cancelAppointment();
 void displayTimetable();
+void viewPatientAppointments();
 int getValidatedInt(string prompt, int minVal, int maxVal);
 
 //SAVING MODULES
@@ -162,7 +163,8 @@ void appointmentMenu() {
         cout << " | [2] Reschedule an Appointment           |\n";
         cout << " | [3] Cancel an Appointment               |\n";
         cout << " | [4] Display Doctor Available Timetable  |\n";
-        cout << " | [5] Return to Main Menu                 |\n";
+        cout << " | [5] View Patient's Appointments         |\n";
+        cout << " | [6] Return to Main Menu                 |\n";
         cout << " +-----------------------------------------+\n";
 
         choice = getValidatedInt(" Enter your choice (1-5): ", 1, 5);
@@ -181,10 +183,13 @@ void appointmentMenu() {
             displayTimetable();
             break;
         case 5:
-            cout << "\n Returning to Main Menu...\n";
+            viewPatientAppointments();
             break;
+        case 6: 
+            cout << "\n Returning to Main Menu...\n";
+                break;
         }
-    } while (choice != 5);
+    } while (choice != 6);
 }
 void makeAppointment() {
     cout << "\n +-----------------------------------------+\n";
@@ -431,12 +436,77 @@ void displayTimetable() {
                 appointmentList[j].time == currentSlot &&
                 appointmentList[j].status != "Cancelled") {
 
-                status = "Booked (Patient ID: " + to_string(appointmentList[j].patientID) + ")";
+                string pName = "Unknown";
+                for (int k = 0; k < (int)patientList.size(); k++) {
+                    if (patientList[k].patientID == appointmentList[j].patientID) {
+                        pName = patientList[k].patientName;
+                        break;
+                    }
+                }
+                stringstream ss_pid;
+                ss_pid << "P" << right << setfill('0') << setw(4) << appointmentList[j].patientID;
+                status = "Booked (" + ss_pid.str() + " - " + pName + ")";
+                cout << setfill(' ');
                 break;
+
             }
         }
 
         cout << " | " << left << setw(15) << currentSlot << "| " << setw(34) << status << "  |\n";
     }
     cout << " +------------------------------------------------------+\n";
+}
+void viewPatientAppointments() {
+    cout << "\n +-----------------------------------------+\n";
+    cout << " |        VIEW PATIENT APPOINTMENTS        |\n";
+    cout << " +-----------------------------------------+\n";
+
+    if (appointmentList.empty()) {
+        cout << " [INFO] No appointments available in the system.\n";
+        return;
+    }
+
+    int pID = getValidatedInt(" Enter Patient ID (1 - 9999, or 0 to cancel): ", 0, 9999);
+    if (pID == 0) return;
+
+    string pName = "Unknown";
+    bool patientExists = false;
+    for (int i = 0; i < (int)patientList.size(); i++) {
+        if (patientList[i].patientID == pID) {
+            pName = patientList[i].patientName;
+            patientExists = true;
+            break;
+        }
+    }
+    if (!patientExists) {
+        cout << " [ERROR] Patient ID " << pID << " not found!\n";
+        return;
+    }
+    stringstream ss_pid;
+    ss_pid << "P" << setfill('0') << setw(4) << pID;
+    string searchStr = ss_pid.str() + " - " + pName;
+
+    cout << "\n +--------------------------------------------------------------------------+\n";
+    cout << " | Appointments for: " << left << setfill(' ') << setw(54) << searchStr << " |\n";
+    cout << " +--------------------------------------------------------------------------+\n";
+    cout << " | Appt ID | Doctor Name          | Date       | Time  | Status         |\n";
+    cout << " +--------------------------------------------------------------------------+\n";
+
+    bool hasAppt = false;
+    for (int i = 0; i < (int)appointmentList.size(); i++) {
+        if (appointmentList[i].patientID == pID) {
+            hasAppt = true;
+            string apptIDStr = "A" + to_string(appointmentList[i].appointmentID);
+
+            cout << " | " << left << setw(7) << apptIDStr
+                << " | Dr. " << setw(15) << appointmentList[i].doctorName
+                << " | " << setw(10) << appointmentList[i].date
+                << " | " << setw(5) << appointmentList[i].time
+                << " | " << setw(14) << appointmentList[i].status << " |\n";
+        }
+    }
+    if (!hasAppt) {
+        cout << " | " << setw(72) << "No appointments found for this patient." << " |\n";
+    }
+    cout << " +--------------------------------------------------------------------------+\n";
 }
