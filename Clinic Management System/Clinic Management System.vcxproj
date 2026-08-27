@@ -149,6 +149,7 @@
     <ClInclude Include="Appointment.h" />
     <ClInclude Include="bill.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="Pharmacy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
