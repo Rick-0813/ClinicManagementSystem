@@ -327,7 +327,6 @@ void rescheduleAppointment() {
                 appointmentList[i].status != "Cancelled") {
 
                 isSlotTaken = true;
-                cout << " [ERROR] Dr. " << appointmentList[apptIndex].doctorName << " is already booked at that time! Please choose another slot.\n\n";
                 break;
             }
         }

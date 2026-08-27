@@ -1,10 +1,7 @@
-1|2|Mary Lee|30|1.8|0|31.8|50|18.2|N/A|Paid|2|2,Vitamin C,2,10,20;2,Vitamin C,1,10,10
-2|2|Mary Lee|39.5|2.37|0|41.87|50|8.13|N/A|Paid|2|2,Vitamin C,2,10,20;1,Panadol,3,6.5,19.5
-3|2|Mary Lee|39.5|2.37|0|41.87|50|8.13|N/A|Paid|2|2,Vitamin C,2,10,20;1,Panadol,3,6.5,19.5
-4|1|Tan Wei Da|10|0.6|0|0|-9.25596e+61|-9.25596e+61|N/A|Cancelled (Wrong Bill)|0|
-5|1|Tan Wei Da|20|1.2|0|21.2|25|3.8|N/A|Paid|1|2,Vitamin C,2,10,20
-6|4|Bryan Lai Xuan Qi |6.5|0.39|0|0|0|0|N/A|Paid|0|
-7|1|John Tan|6.5|0.39|0.65|6.24|20|13.76|N/A|Paid|1|1,Panadol,1,6.5,6.5
-8|2|Mary Lee|6.5|0.39|0|6.89|-9.25596e+61|-9.25596e+61|N/A|Unpaid|1|1,Panadol,1,6.5,6.5
-9|2|Wang Chong Liang|6.5|0.39|0|6.89|-9.25596e+61|-9.25596e+61|N/A|Unpaid|1|1,Panadol,1,6.5,6.5
-10|1|Tan Wei Da|13|0.78|0|13.78|-9.25596e+61|-9.25596e+61|N/A|Unpaid|2|1,Panadol,1,6.5,6.5;1,Panadol,1,6.5,6.5
+1|1|Tan Wei Da|16.50|0.99|0.00|17.49|20.00|2.51|N/A|Paid|2|1,Panadol,1,6.50,6.50;2,Vitamin C,1,10.00,10.00
+2|2|Wang Chong Liang|13.00|0.78|0.00|13.78|0.00|0.00|N/A|Unpaid|1|1,Panadol,2,6.50,13.00
+3|3|Wang Su Ki|10.00|0.60|0.00|10.60|15.00|4.40|N/A|Paid|1|2,Vitamin C,1,10.00,10.00
+4|4|Bryan Lai Xuan Qi|19.50|1.17|0.00|20.67|50.00|29.33|N/A|Paid|1|1,Panadol,3,6.50,19.50
+5|5|Dennis|20.00|1.20|0.00|21.20|0.00|0.00|N/A|Unpaid|1|2,Vitamin C,2,10.00,20.00
+6|6|Tan Jia Seng|0.00|0.00|0.00|0.00|0.00|0.00|N/A|Cancelled (Doctor absent)|0|
+7|1|Tan Wei Da|6.50|0.39|0.00|6.89|0.00|0.00|N/A|Unpaid|1|1,Panadol,1,6.50,6.50

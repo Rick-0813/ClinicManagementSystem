@@ -1,6 +1,6 @@
 #include "bill.h"
 #include<sstream>
-#include<iomanip>
+#include<iomanip>b     
 #include <fstream>
 using namespace std;
 
@@ -439,12 +439,12 @@ void makePayment() {
     string billStr = ss_id.str();
 
     cout << " +-----------------------------------------------------------+\n";
-    cout << " | " << left << setw(57) << ("Bill Details (Bill ID: " + billStr + ")") << " |\n";
+    cout << " | " << setfill(' ') << left << setw(57) << ("Bill Details (Bill ID: " + billStr + ")") << " |\n";
     cout << " +-----------------------------------------------------------+\n";
     cout << " | Patient ID   : " << left << setw(42) << billList[bIndex].patientID << " |\n";
     cout << " | Patient Name : " << left << setw(42) << billList[bIndex].patientName << " |\n";
     cout << " +-----------------------------------------------------------+\n";
-    cout << " | Medicine Name          | Qty   | Unit Price  | Subtotal   |\n";
+    cout << " | Medicine Name          |   Qty |  Unit Price |   Subtotal |\n";
 
     for (int i = 0; i < (int)billList[bIndex].items.size(); i++) {
         cout << " | " << left << setw(22) << billList[bIndex].items[i].medicineName
@@ -488,7 +488,7 @@ void makePayment() {
     cout << " | Final Amount       : RM " << right << setw(33) << fixed << setprecision(2) << billList[bIndex].finalAmount << " |\n";
     cout << " | Total Paid         : RM " << right << setw(33) << billList[bIndex].amountPaid << " |\n";
     cout << " | Change             : RM " << right << setw(33) << billList[bIndex].change << " |\n";
-    cout << " | Status             : " << left << setw(34) << billList[bIndex].status << " |\n";
+    cout << " | Status             : " << left << setw(34) << billList[bIndex].status << "   |\n";
     cout << " +-----------------------------------------------------------+\n";
     cout << " [SUCCESS] Payment completed successfully!\n";
 
@@ -786,7 +786,7 @@ void billManagementRecords() {
     } while (choice != 0);
 }
 
-void billMenu() {
+void billMenu()  {
 
     int choice;
     do {
