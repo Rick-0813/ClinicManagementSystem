@@ -3,6 +3,8 @@
 #include <string>
 #include <cctype>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
 #include "Pharmacy.h"
 
 using namespace std;
@@ -55,6 +57,7 @@ bool createMedicine(int qty, string medicineName, double price) {
     }
     Medicine newChar = { autoGenerateID(), medicineName, price, qty };
     medicineList.push_back(newChar);
+    saveMedicinesToFile();
     return true;
 }
 
@@ -64,6 +67,7 @@ bool updateMedicineByID(string searchID, int newQty, double newPrice) {
         if (toLowerCase(medicineList[i].medicineID) == targetID) {
             medicineList[i].stockQty = newQty;
             medicineList[i].price = newPrice;
+            saveMedicinesToFile();
             return true;
         }
     }
@@ -75,6 +79,7 @@ bool deleteMedicineByID(string searchID) {
     for (int i = 0; i < medicineList.size(); i++) {
         if (toLowerCase(medicineList[i].medicineID) == targetID) {
             medicineList.erase(medicineList.begin() + i);
+            saveMedicinesToFile();
             return true;
         }
     }
@@ -91,8 +96,14 @@ void addMedicineUI() {
     double price;
 
     cout << " Enter Medicine Name (or 'exit' to cancel): ";
-    cin >> name;
+    cin.ignore(1000, '\n');
+    getline(cin, name);
     if (name == "exit") return;
+
+    if (name.empty()) {
+        cout << " [ERROR] Medicine name cannot be empty!\n";
+        return;
+    }
 
     cout << " Enter Initial Stock Quantity: ";
     while (!(cin >> qty)) {
@@ -101,11 +112,21 @@ void addMedicineUI() {
         cin.ignore(1000, '\n');
     }
 
+    if (qty < 0) {
+        cout << " [ERROR] Quantity and price cannot be negative!\n";
+        return;
+    }
+
     cout << " Enter Price (RM): ";
     while (!(cin >> price)) {
         cout << " [ERROR] Invalid price! Please enter a valid amount: ";
         cin.clear();
         cin.ignore(1000, '\n');
+    }
+
+    if (price < 0) {
+        cout << " [ERROR] Quantity and price cannot be negative!\n";
+        return;
     }
 
     if (createMedicine(qty, name, price)) {
@@ -128,16 +149,16 @@ void viewMedicineUI() {
     }
 
     cout << " | " << left << setw(15) << "Medicine ID"
-        << "| " << setw(40) << "Medicine Name"
-        << "| " << setw(20) << "Stock Quantity"
-        << "| " << setw(20) << "Unit Price (RM)" << "       |\n";
+        << " | " << left << setw(45) << "Medicine Name"
+        << " | " << right << setw(25) << "Stock Quantity"
+        << " | " << right << setw(28) << "Unit Price (RM)" << " |\n";
     cout << " +----------------------------------------------------------------------------------------------------------------------------+\n";
 
     for (int i = 0; i < medicineList.size(); i++) {
         cout << " | " << left << setw(15) << medicineList[i].medicineID
-            << "| " << setw(40) << medicineList[i].medicineName
-            << "| " << setw(20) << medicineList[i].stockQty
-            << "| " << setw(20) << fixed << setprecision(2) << medicineList[i].price << "       |\n";
+            << " | " << left << setw(45) << medicineList[i].medicineName
+            << " | " << right << setw(25) << medicineList[i].stockQty
+            << " | " << right << setw(28) << fixed << setprecision(2) << medicineList[i].price << " |\n";
     }
     cout << " +============================================================================================================================+\n";
 }
@@ -189,11 +210,21 @@ void updateMedicineUI() {
         cin.ignore(1000, '\n');
     }
 
+    if (newQty < 0) {
+        cout << " [ERROR] Quantity and price cannot be negative!\n";
+        return;
+    }
+
     cout << " Enter NEW Price (RM): ";
     while (!(cin >> newPrice)) {
         cout << " [ERROR] Invalid price! Try again: ";
         cin.clear();
         cin.ignore(1000, '\n');
+    }
+
+    if (newPrice < 0) {
+        cout << " [ERROR] Quantity and price cannot be negative!\n";
+        return;
     }
 
     if (updateMedicineByID(searchID, newQty, newPrice)) {
@@ -247,15 +278,17 @@ void pharmacyMenu() {
         }
 
         if (hasLowStock) {
-            cout << "\n +============================================================================================================================+\n";
-            cout << " | [WARNING] (Low Stock Alert Detected)                                                                                       |\n";
+            cout << "\n +----------------------------------------------------------------------------------------------------------------------------+\n";
+            cout << " | [!] LOW STOCK ALERT                                                                                                        |\n";
+            cout << " +----------------------------------------------------------------------------------------------------------------------------+\n";
             for (int i = 0; i < medicineList.size(); i++) {
                 if (medicineList[i].stockQty < 50) {
-                    cout << " | -> " << left << setw(20) << medicineList[i].medicineName
-                        << " Current Stock: " << setw(79) << medicineList[i].stockQty << "|\n";
+                    cout << " | -> " << left << setw(20) << medicineList[i].medicineID
+                        << " | " << left << setw(74) << medicineList[i].medicineName
+                        << " Current Stock: " << right << setw(6) << medicineList[i].stockQty << " |\n";
                 }
             }
-            cout << " +============================================================================================================================+\n";
+            cout << " +----------------------------------------------------------------------------------------------------------------------------+\n";
         }
 
         cout << "\n +============================================================================================================================+\n";
@@ -283,8 +316,6 @@ void pharmacyMenu() {
         case 2:
             viewMedicineUI();
             pauseScreen();
-            searchMedicineByID();
-            pauseScreen();
             break;
         case 3:
             updateMedicineUI();
@@ -298,4 +329,43 @@ void pharmacyMenu() {
             break;
         }
     } while (choice != 5);
+}
+
+void saveMedicinesToFile() {
+    ofstream outFile("medicines.txt");
+    if (!outFile.is_open()) {
+        cout << " [ERROR] Failed to save medicine records to file!\n";
+        return;
+    }
+    for (int i = 0; i < medicineList.size(); i++) {
+        outFile << medicineList[i].medicineID << "|"
+            << medicineList[i].medicineName << "|"
+            << medicineList[i].price << "|"
+            << medicineList[i].stockQty << "\n";
+    }
+    outFile.close();
+}
+
+void loadMedicinesFromFile() {
+    ifstream inFile("medicines.txt");
+    if (!inFile.is_open()) return;
+
+    medicineList.clear();
+    string line;
+
+    while (getline(inFile, line)) {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string itemStr;
+        Medicine m;
+
+        if (getline(ss, itemStr, '|')) m.medicineID = itemStr;
+        if (getline(ss, itemStr, '|')) m.medicineName = itemStr;
+        if (getline(ss, itemStr, '|')) m.price = stod(itemStr);
+        if (getline(ss, itemStr, '|')) m.stockQty = stoi(itemStr);
+
+        medicineList.push_back(m);
+    }
+    inFile.close();
 }

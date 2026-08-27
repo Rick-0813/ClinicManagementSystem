@@ -1,0 +1,8 @@
+M001|Panadol|6.50|120
+M002|Vitamin C|10.00|200
+M003|Cough Syrup|12.50|45
+M004|Ibuprofen|8.00|150
+M005|Amoxicillin Antibiotic|15.00|30
+M006|Cetirizine (Allergy)|1.50|80
+M007|Gastric Pill|2.20|15
+M008|Eye Drops (Dry Eyes)|18.90|60

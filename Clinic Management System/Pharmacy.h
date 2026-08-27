@@ -14,4 +14,7 @@ struct Medicine {
 
 extern vector<Medicine> medicineList;
 
+string toLowerCase(string str);
 void pharmacyMenu();
+void loadMedicinesFromFile();
+void saveMedicinesToFile();

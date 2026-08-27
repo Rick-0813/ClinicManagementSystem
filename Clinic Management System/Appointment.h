@@ -19,3 +19,5 @@ extern vector<Appointment> appointmentList;
 
 
 void appointmentMenu();
+void loadAppointmentsFromFile();
+void saveAppointmentsToFile();

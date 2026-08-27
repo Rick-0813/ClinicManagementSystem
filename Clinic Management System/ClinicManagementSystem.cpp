@@ -1,66 +1,24 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "Patient.h"
+#include "Appointment.h"
 #include "Pharmacy.h"
-
+#include "bill.h"
 using namespace std;
-
-struct Patient {
-    int patientID;
-    string patientName;
-    int age;
-    string allergy;
-    vector<string> medicalHistory;
-};
-
-struct Appointment {
-    int appointmentID;
-    int patientID;
-    string doctorName;
-    string date;
-    string time;
-    string status;
-};
-
-struct BillItem {
-    int medicineID;
-    string medicineName;
-    int quantity;
-    double unitPrice;
-    double subtotal;
-};
-
-struct Bill {
-    int billID;
-    int patientID;
-    string patientName;
-    vector<BillItem> items;
-    double totalAmount;
-    double taxAmount;
-    double discountAmount;
-    double finalAmount;
-    double amountPaid;
-    double change;
-    string date;
-    string status;
-};
 
 vector<Patient> patientList;
 vector<Appointment> appointmentList;
 vector<Bill> billList;
 
-void patientMenu();
-void appointmentMenu();
-void billMenu();
-void loadPatientsFromFile();
-void loadAppointmentsFromFile();
-void loadBillsFromFile();
-void savePatientsToFile();
-void saveAppointmentsToFile();
-void saveBillsToFile();
-
 void pauseScreen() {
     cout << "\n Press Enter to Continue ....";
+
+    //.peek use to check the next input is "\n" or not if yes get directly get , if not then wait for user to press enter
+    if (cin.peek() == '\n') {
+        cin.get();
+    }
+
     cin.ignore(1000, '\n');
 }
 
@@ -91,7 +49,7 @@ void displayMainMenu() {
 int getValidChoice(int minOption, int maxOption) {
     int choice;
     while (true) {
-        cout << " Enter your choice (1-5) : ";
+        cout << " Enter your choice (" << minOption << "-" << maxOption << ") : ";
         cin >> choice;
 
         if (cin.fail()) {
@@ -118,9 +76,7 @@ int main() {
     loadPatientsFromFile();
     loadAppointmentsFromFile();
     loadBillsFromFile();
-
-    medicineList.push_back({ "M001", "Panadol", 6.50, 20 });
-    medicineList.push_back({ "M002", "Vitamin C", 10.00, 55 });
+    loadMedicinesFromFile();
 
     int choice;
 
@@ -153,6 +109,7 @@ int main() {
             savePatientsToFile();
             saveAppointmentsToFile();
             saveBillsToFile();
+            saveMedicinesToFile();
             cout << "\n Exiting System. Thank you for using Harmony Clinic! \n";
             break;
         }
