@@ -787,7 +787,6 @@ void billManagementRecords() {
 }
 
 void billMenu() {
-    loadBillsFromFile();
 
     int choice;
     do {

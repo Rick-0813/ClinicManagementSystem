@@ -31,3 +31,5 @@ struct Bill {
 extern vector<Bill> billList;
 
 void billMenu();
+void loadBillsFromFile();
+void saveBillsToFile();

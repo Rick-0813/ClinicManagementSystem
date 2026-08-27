@@ -29,7 +29,6 @@ void savePatientsToFile();
 
 void patientMenu() {
 
-    loadPatientsFromFile();
     int choice;
 
     do {

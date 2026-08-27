@@ -151,7 +151,7 @@ string getValidatedTime(string prompt) {
 
 //FUNCTIONS
 void appointmentMenu() {
-    loadAppointmentsFromFile();
+
     int choice = 0;
 
     do {
@@ -241,7 +241,7 @@ void makeAppointment() {
 
     bool isSlotTaken = true;
     while (isSlotTaken) {
-        newAppt.date = getValidatedDate("Enter Appointment Date (DD/MM/YYYY): ");
+        newAppt.date = getValidatedDate(" Enter Appointment Date (DD/MM/YYYY): ");
         newAppt.time = getValidatedTime(" Enter Appointment Time (HH:MM): ");
 
         isSlotTaken = false;
@@ -269,10 +269,10 @@ void makeAppointment() {
     cout << "\n +-----------------------------------------------------------+\n";
     cout << " | [SUCCESS] Appointment Created Successfully!               |\n";
     cout << " +-----------------------------------------------------------+\n";
-    cout << " | Appt ID : " << left << setw(45) << apptIDStr << " |\n";
-    cout << " | Doctor  : Dr. " << left << setw(41) << newAppt.doctorName << " |\n";
-    cout << " | Date    : " << left << setw(45) << newAppt.date << " |\n";
-    cout << " | Time    : " << left << setw(45) << newAppt.time << " |\n";
+    cout << " | Appt ID : " << left << setw(45) << apptIDStr << "   |\n";
+    cout << " | Doctor  : Dr. " << left << setw(41) << newAppt.doctorName << "   |\n";
+    cout << " | Date    : " << left << setw(45) << newAppt.date << "   |\n";
+    cout << " | Time    : " << left << setw(45) << newAppt.time << "   |\n";
     cout << " +-----------------------------------------------------------+\n";
 }
 void rescheduleAppointment() {
@@ -396,7 +396,7 @@ void displayTimetable() {
 
     loadDoctorsFromFile();
     if (doctorList.empty()) {
-        cout << "\t[ERROR] No doctors available in doctor.txt.\n";
+        cout << " [ERROR] No doctors available in doctor.txt.\n";
         return;
     }
 
@@ -404,21 +404,21 @@ void displayTimetable() {
     cout << " |            AVAILABLE DOCTORS            |\n";
     cout << " +-----------------------------------------+\n";
     for (int i = 0; i < doctorList.size(); i++) {
-        cout << " | [" << (i + 1) << "] Dr. " << left << setw(30) << doctorList[i] << " |\n";
+        cout << " | [" << (i + 1) << "] Dr. " << left << setw(30) << doctorList[i] << "  |\n";
     }
     cout << " +-----------------------------------------+\n";
 
     cout << right << setfill(' ');
-    string prompt = "Select Doctor (1 - " + to_string(doctorList.size()) + "): ";
+    string prompt = " Select Doctor (1 - " + to_string(doctorList.size()) + "): ";
     int docChoice = getValidatedInt(prompt, 1, doctorList.size());
     string selectedDoc = doctorList[docChoice - 1];
 
     string searchDate = getValidatedDate(" Enter Date to check (DD/MM/YYYY): ");
 
     cout << "\n +------------------------------------------------------+\n";
-    cout << " | Timetable for Dr. " << left << setw(18) << selectedDoc << " on " << setw(10) << searchDate << " |\n";
+    cout << " | Timetable for Dr. " << left << setw(18) << selectedDoc << " on " << setw(10) << searchDate << "   |\n";
     cout << " +------------------------------------------------------+\n";
-    cout << " | " << left << setw(15) << "Time Slot" << "| " << setw(34) << "Status" << " |\n";
+    cout << " | " << left << setw(15) << "Time Slot" << "| " << setw(34) << "Status" << "  |\n";
     cout << " +------------------------------------------------------+\n";
 
     for (int i = 0; i < CLINIC_TIMES.size(); i++) {
@@ -436,7 +436,7 @@ void displayTimetable() {
             }
         }
 
-        cout << " | " << left << setw(15) << currentSlot << "| " << setw(34) << status << " |\n";
+        cout << " | " << left << setw(15) << currentSlot << "| " << setw(34) << status << "  |\n";
     }
     cout << " +------------------------------------------------------+\n";
 }

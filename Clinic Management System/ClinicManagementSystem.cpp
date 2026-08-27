@@ -65,6 +65,12 @@ void patientMenu();
 void appointmentMenu();
 void pharmacyMenu();
 void billMenu();
+void loadPatientsFromFile();
+void loadAppointmentsFromFile();
+void loadBillsFromFile();
+void savePatientsToFile();
+void saveAppointmentsToFile();
+void saveBillsToFile();
 
 
 //Utilizy Function
@@ -125,8 +131,10 @@ int getValidChoice (int minOption , int maxOption){
 }
 
 int main () {
-    patientList.push_back({ 1, "John Tan", 70, "None", {} });
-    patientList.push_back({ 2, "Mary Lee", 30, "None", {} });
+    //load all of the data once the program is start
+    loadPatientsFromFile();
+    loadAppointmentsFromFile();
+    loadBillsFromFile();
     medicineList.push_back({ 1, "Panadol", 6.50, 10 });
     medicineList.push_back({ 2, "Vitamin C", 10.00, 15 });
     int choice;
@@ -156,6 +164,10 @@ int main () {
                 break;
             }
             case 5 : {
+                cout << "\n Saving all data...\n";
+                savePatientsToFile();
+                saveAppointmentsToFile();
+                saveBillsToFile();
                 cout << "\n Exiting System. Thank you for using Harmony Clinic! \n";
                 break;
             }
