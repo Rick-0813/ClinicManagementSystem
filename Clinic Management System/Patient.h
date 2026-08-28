@@ -17,5 +17,6 @@ extern vector<Patient> patientList;
 
 void patientMenu();
 int getValidatedInt(string prompt, int minVal, int maxVal);
+Patient* findPatientByID(int id);
 void loadPatientsFromFile();
 void savePatientsToFile();
