@@ -13,12 +13,6 @@ vector<Bill> billList;
 
 void pauseScreen() {
     cout << "\n Press Enter to Continue ....";
-
-    //.peek use to check the next input is "\n" or not if yes get directly get , if not then wait for user to press enter
-    if (cin.peek() == '\n') {
-        cin.get();
-    }
-
     cin.ignore(1000, '\n');
 }
 
@@ -77,6 +71,7 @@ int main() {
     loadAppointmentsFromFile();
     loadBillsFromFile();
     loadMedicinesFromFile();
+    void loadDoctorsFromFile();
 
     int choice;
 

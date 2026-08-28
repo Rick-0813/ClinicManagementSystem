@@ -16,5 +16,6 @@ struct Patient {
 extern vector<Patient> patientList;
 
 void patientMenu();
+int getValidatedInt(string prompt, int minVal, int maxVal);
 void loadPatientsFromFile();
 void savePatientsToFile();

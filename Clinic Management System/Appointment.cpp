@@ -16,6 +16,7 @@ const vector<string> CLINIC_TIMES = { "09:00", "10:00", "11:00", "12:00", "13:00
 void makeAppointment();
 void rescheduleAppointment();
 void cancelAppointment();
+void completeAppointment();
 void displayTimetable();
 int getValidatedInt(string prompt, int minVal, int maxVal);
 
@@ -109,6 +110,9 @@ bool isValidDate(const string& date) {
     bool isLeap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     if (month == 2 && isLeap) daysInMonth[1] = 29;
 
+    //check the date is over the maximum day of the month or not
+    if (day > daysInMonth[month - 1]) return false;
+
     return true;
 } 
 string getValidatedDate(string prompt) {
@@ -155,8 +159,9 @@ void appointmentMenu() {
         cout << " | [1] Make an Appointment                 |\n";
         cout << " | [2] Reschedule an Appointment           |\n";
         cout << " | [3] Cancel an Appointment               |\n";
-        cout << " | [4] Display Doctor Available Timetable  |\n";
-        cout << " | [5] Return to Main Menu                 |\n";
+        cout << " | [4] Mark Appointment as Completed       |\n";
+        cout << " | [5] Display Doctor Available Timetable  |\n";
+        cout << " | [6] Return to Main Menu                 |\n";
         cout << " +-----------------------------------------+\n";
 
         choice = getValidatedInt(" Enter your choice (1-5): ", 1, 5);
@@ -172,20 +177,22 @@ void appointmentMenu() {
             cancelAppointment();
             break;
         case 4:
-            displayTimetable();
+            completeAppointment();
             break;
         case 5:
+            displayTimetable();
+            break;
+        case 6:
             cout << "\n Returning to Main Menu...\n";
             break;
         }
-    } while (choice != 5);
+    } while (choice != 6);
 }
 void makeAppointment() {
     cout << "\n +-----------------------------------------+\n";
     cout << " |           MAKE AN APPOINTMENT           |\n";
     cout << " +-----------------------------------------+\n";
 
-    loadDoctorsFromFile();
     if (doctorList.empty()) {
         cout << " [ERROR] No doctors available in system.\n";
         return;
@@ -382,12 +389,72 @@ void cancelAppointment() {
         cout << " [INFO] Cancellation aborted.\n";
     }
 }
+void completeAppointment() {
+    cout << "\n +-----------------------------------------+\n";
+    cout << " |          COMPLETE APPOINTMENT           |\n";
+    cout << " +-----------------------------------------+\n";
+
+    //check the appointment list is empty or not if is empty then show info message
+    if (appointmentList.empty()) {
+        cout << " [INFO] No appointments available in the system.";
+        return;
+    }
+
+    int apptID = getValidatedInt(" Enter Appointment ID to Complete (e.g. 1001, or 0 to go back): ", 0, 99999);
+
+    if (apptID == 0) 
+        return;
+
+    int apptIndex = -1;
+    //find the appointment based on the apptID
+    for (int i = 0; i < (int)appointmentList.size(); i++) {
+        if (appointmentList[i].appointmentID == apptID) {
+            // If found, save the index and stop searching
+            apptIndex = i;
+            break;
+        }
+    }
+
+    //if not found mean it apptIndex did not change which is -1 then print the error message
+    if (apptIndex == -1) {
+        cout << " [ERROR] Appointment ID A" << apptID << " not found!\n";
+        return;
+    }
+
+    //check the appointment status
+    if (appointmentList[apptIndex].status == "Cancelled") {
+        cout << " [ERROR] Cannot complete a Cancelled appointment!\n";
+        return;
+    }
+    if (appointmentList[apptIndex].status == "Completed") {
+        cout << " [ERROR] This appointment is already marked as Completed!\n";
+        return;
+    }
+
+    //display the information about the appointment
+    cout << "\n Current Appointment Details:\n";
+    cout << " Doctor : Dr. " << appointmentList[apptIndex].doctorName << "\n";
+    cout << " Date   : " << appointmentList[apptIndex].date << "\n";
+    cout << " Time   : " << appointmentList[apptIndex].time << "\n\n";
+
+    cout << " Mark this appointment as Completed? (Y/N): ";
+    string confirm;
+    getline(cin, confirm);
+
+    if (confirm == "Y" || confirm == "y") {
+        appointmentList[apptIndex].status = "Completed";
+        saveAppointmentsToFile();
+        cout << " [SUCCESS] Appointment A" << apptID << " successfully marked as Completed!\n";
+    }
+    else {
+        cout << " [INFO] Operation aborted.\n";
+    }
+}
 void displayTimetable() {
     cout << "\n +-----------------------------------------+\n";
     cout << " |            DOCTOR TIMETABLE             |\n";
     cout << " +-----------------------------------------+\n";
 
-    loadDoctorsFromFile();
     if (doctorList.empty()) {
         cout << " [ERROR] No doctors available in doctor.txt.\n";
         return;

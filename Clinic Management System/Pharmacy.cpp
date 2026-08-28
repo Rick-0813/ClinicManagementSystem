@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include "Pharmacy.h"
+#include "bill.h"
 
 using namespace std;
 
@@ -96,7 +97,6 @@ void addMedicineUI() {
     double price;
 
     cout << " Enter Medicine Name (or 'exit' to cancel): ";
-    cin.ignore(1000, '\n');
     getline(cin, name);
     if (name == "exit") return;
 
@@ -265,6 +265,71 @@ void deleteMedicineUI() {
     }
 }
 
+//function 5
+void medicineUsageReport() {
+    cout << "\n +-----------------------------------------+\n";
+    cout << " |      MEDICINE SALES & USAGE REPORT      |\n";
+    cout << " +-----------------------------------------+\n";
+
+    //use if and .empty to check the medicine list is empty or not , if it is empty then show info message
+    if (medicineList.empty()) {
+        cout << " [INFO] Pharmacy inventory is empty.\n";
+        return;
+    }
+
+
+    //get user input (the medicine id want to generate report)
+    string searchID;
+    cout << " Enter Medicine ID to generate report (e.g. M001): ";
+    getline(cin, searchID);
+  
+    //the temp is Medicine data type 
+    //use to pass in to the findMedicineByID function and after find the medicine sotre all of the founded medicine data to the temp 
+    Medicine temp;
+    //use if and the find function check the medicine id want to search is inside the medicine list or not 
+    //if not , display the error message 
+    if (!findMedicineByID(searchID, temp)) {
+        cout << " [ERROR] Medicine ID [" << searchID << "] not found in inventory!\n";
+        return;
+    }
+
+    //use to record the data
+    int totalSold = 0;
+    double totalRevenue = 0.0;
+
+    //use .substr to delete the first word e.g. M001 -> 001
+    //then use stoi change the word from string to int e.g. after the substr , M001 become 001 and stoi change 001 to the int data type
+    //change the medicine ID to int because the medicine ID store in the billList is int , so change to int easy to do operation
+    int formatID = stoi(temp.medicineID.substr(1));
+
+    //use for loop to traverse all of the billList
+    for (int i = 0; i < (int)billList.size(); i++) {
+        //use if to check the bill stauts is cancel or not
+        //only add the quantity to totalSold and subtotal to totalRevenue when the bill status is not cancalled
+        if (billList[i].status != "Cancelled") {
+            //use for loop to traverse all of the items inside the billList
+            //it is because the item inside the billList is vector array so it need another for loop to access each of the data
+            for (int j = 0; j < (int)billList[i].items.size(); j++) {
+                //use if to check the medicine id inside the item inside the billList inside 
+                //if the medicine id same with the formatID (the ID want to genrate report) then add the quantity to totalSold and subtotal to totalRevenue
+                if (billList[i].items[j].medicineID == formatID) {
+                    totalSold += billList[i].items[j].quantity;
+                    totalRevenue += billList[i].items[j].subtotal;
+                }
+            }
+        }
+    }
+
+    //display the report
+    cout << "\n +-----------------------------------------------------------+\n";
+    cout << " | Sales Report for: " << left << setw(39) << temp.medicineName << " |\n";
+    cout << " +-----------------------------------------------------------+\n";
+    cout << " | Current Stock in Clinic : " << right << setw(27) << temp.stockQty << " |\n";
+    cout << " | Total Quantity Sold     : " << right << setw(27) << totalSold << " |\n";
+    cout << " | Total Revenue Generated : RM " << right << setw(24) << fixed << setprecision(2) << totalRevenue << " |\n";
+    cout << " +-----------------------------------------------------------+\n";
+}
+
 void pharmacyMenu() {
     int choice = 0;
 
@@ -298,15 +363,18 @@ void pharmacyMenu() {
         cout << " |  [2] View All Medicines                                                                                                    |\n";
         cout << " |  [3] Update Medicine Stock/Price                                                                                           |\n";
         cout << " |  [4] Delete Medicine                                                                                                       |\n";
-        cout << " |  [5] Return to Main Menu                                                                                                   |\n";
+        cout << " |  [5] Medicine Sales & Usage Report                                                                                         |\n";
+        cout << " |  [6] Return to Main Menu                                                                                                   |\n";
         cout << " +============================================================================================================================+\n";
 
         cout << " Enter your choice (1-5): ";
-        while (!(cin >> choice) || choice < 1 || choice > 5) {
+        while (!(cin >> choice) || choice < 1 || choice > 6) {
             cout << " [ERROR] Invalid choice! Please enter a number between 1 and 5: ";
             cin.clear();
             cin.ignore(1000, '\n');
         }
+
+        cin.ignore(1000, '\n');
 
         switch (choice) {
         case 1:
@@ -325,10 +393,14 @@ void pharmacyMenu() {
             deleteMedicineUI();
             pauseScreen();
             break;
-        case 5:
+        case 5 : 
+            medicineUsageReport();
+            pauseScreen();
+            break;
+        case 6:
             break;
         }
-    } while (choice != 5);
+    } while (choice != 6);
 }
 
 void saveMedicinesToFile() {

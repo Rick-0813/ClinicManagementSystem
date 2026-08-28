@@ -1,4 +1,5 @@
 #include "Patient.h"
+#include "Appointment.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -13,6 +14,7 @@ void registerPatient();
 void addConsultationRecord();
 void displayAllPatients();
 void generateMC();
+void checkPatientAppointments();
 Patient* findPatientByID(int id);
 int getValidatedInt(string prompt, int minVal, int maxVal);
 void loadPatientsFromFile();
@@ -30,7 +32,8 @@ void patientMenu() {
         cout << " | [2] Consultation & Medical History      |\n";
         cout << " | [3] Display All Patients                |\n";
         cout << " | [4] Generate Medical Certificate (MC)   |\n";
-        cout << " | [5] Back to Main Menu                   |\n";
+        cout << " | [5] Check Patient Appointments          |\n";
+        cout << " | [6] Back to Main Menu                   |\n";
         cout << " +-----------------------------------------+\n";
 
         choice = getValidatedInt(" Enter your choice (1-5): ", 1, 5);
@@ -55,11 +58,15 @@ void patientMenu() {
             break;
 
         case 5:
+            checkPatientAppointments();
+            break;
+
+        case 6:
             cout << "\n Returning to Main Menu...\n";
             break;
         }
 
-    } while (choice != 5);
+    } while (choice != 6);
 }
 
 string formatPatientID(int id) {
@@ -163,14 +170,16 @@ void registerPatient() {
     cout << " |           REGISTER NEW PATIENT            |\n";
     cout << " +-------------------------------------------+\n";
     
-    while (true) {
-        newPatient.patientID = getValidatedInt(" Enter Patient ID (0001 - 9999): ", 1, 9999);
-        if (findPatientByID(newPatient.patientID) == nullptr) {
-            break;
-        }
-        cout << " [ERROR] Patient ID " << formatPatientID(newPatient.patientID)
-            << " already exists! Try another ID.\n";
+    //check is the patinetList is empty or not if yes generate the id start form 1
+    if (patientList.empty()) {
+        newPatient.patientID = 1;
     }
+    //if not then take the last number of patient Id and + 1
+    else {
+        newPatient.patientID = patientList.back().patientID + 1;
+    }
+
+    cout << " [INFO] Auto-generated Patient ID : " << formatPatientID(newPatient.patientID) << "\n";
 
     cout << " Enter Patient Full Name : ";
     getline(cin, newPatient.patientName);
@@ -342,4 +351,59 @@ void generateMC() {
     patient->medicalHistory.push_back("MC Issued: " + to_string(mcDays) + " day(s) by Dr. " + doctorName + " (Reason: " + reason + ")");
     savePatientsToFile();
     cout << "\n [SUCCESS] MC generated and saved to patients.txt!\n";
+}
+
+void checkPatientAppointments() {
+    cout << "\n +--------------------------------------------------------+\n";
+    cout << " |              CHECK PATIENT APPOINTMENTS                |\n";
+    cout << " +--------------------------------------------------------+\n";
+
+    //check the patient list is empty or not if it is empty show the info message
+    if (patientList.empty()) {
+        cout << " [INFO] No patients registered yet.\n";
+        return;
+    }
+
+    int searchID = getValidatedInt(" Enter Patient ID to check (0001 - 9999, or 0 to cancel): ", 0, 9999);
+
+    if (searchID == 0)
+        return;
+
+    //chcek the patient using patientID
+    Patient* p = findPatientByID(searchID);
+
+    //nullptr use check found the patient or not 
+    //true true if no patient found with the ID
+    if (p == nullptr) {
+        cout << " [ERROR] Patient ID " << formatPatientID(searchID) << " not found.\n";
+        return;
+    }
+
+    cout << "\n +-------------------------------------------------------------------------+\n";
+    cout << " | Appointments for: " << left << setw(53) << (p->patientName + " (" + formatPatientID(searchID) + ")") << " |\n";
+    cout << " +-------------------------------------------------------------------------+\n";
+    cout << " | Appt ID | Doctor Name          | Date       | Time  | Status            |\n";
+    cout << " +-------------------------------------------------------------------------+\n";
+
+    //use to check have appointment or not , default is not
+    bool hasAppt = false;
+
+    //use for loop to check one by one any patient ID in the appointment list same with the searchID (patientID that want to check appointment)
+    for (int i = 0; i < (int)appointmentList.size(); i++) {
+        //if founded then change the hasAppt mean the patient have make appointment and display it
+        if (appointmentList[i].patientID == searchID) {
+            hasAppt = true;
+            cout << " | A" << left << setw(6) << appointmentList[i].appointmentID
+                << " | Dr. " << left << setw(16) << appointmentList[i].doctorName
+                << " | " << left << setw(10) << appointmentList[i].date
+                << " | " << left << setw(5) << appointmentList[i].time
+                << " | " << left << setw(17) << appointmentList[i].status << " |\n";
+        }
+    }
+    cout << " +-------------------------------------------------------------------------+\n";
+
+    //if did not found then the hasAppt value did not change display the error message
+    if (!hasAppt) {
+        cout << " [INFO] No appointments found for this patient in the system.\n";
+    }
 }

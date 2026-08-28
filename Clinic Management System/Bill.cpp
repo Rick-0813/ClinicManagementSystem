@@ -9,6 +9,7 @@ using namespace std;
 const double SST_RATE = 0.06;
 const double SENIOR_DISCOUNT_RATE = 0.10;
 const int SENIOR_AGE = 65;
+const double CONSULTATION_FEE = 30.00;
 
 //utilize function
 int readInt(const string &prompt) { 
@@ -18,6 +19,7 @@ int readInt(const string &prompt) {
     while (true) {
         cout << prompt;
         cin >> value;
+        //if the input is fail then show the error message
         if (cin.fail()) {
             cin.clear();
             cin.ignore(1000, '\n');
@@ -31,10 +33,12 @@ int readInt(const string &prompt) {
 
 double readDouble(const string &prompt) {
 
+    // using prompt to get a message to display and use const to avoid the prompt message change 
     double value;
     while (true) {
         cout << prompt;
         cin >> value;
+        //if the input is fail then show the error message
         if (cin.fail()) {
             cin.clear();
             cin.ignore(1000, '\n');
@@ -47,6 +51,7 @@ double readDouble(const string &prompt) {
 }
 
 int getPatientAge(int pID) {
+    //use for loop to traverse all patient and check the patient ID is same with the pID or not if yes then return the pateint age
     for (int i = 0; i < (int)patientList.size(); i++) {
         if (patientList[i].patientID == pID) {
             return patientList[i].age;
@@ -56,6 +61,9 @@ int getPatientAge(int pID) {
 }
 
 string formatMedicineID(int id) {
+    //use to combine the format text and number
+    //add the M at the first 
+    //then get the id , then if the id is 1 setfill and setw help it become 001 
     stringstream ss;
     ss << "M" << setfill('0') << setw(3) << id;
     return ss.str();
@@ -68,6 +76,7 @@ void displayMedicineTable() {
         << "| " << right << setw(11) << "Price (RM)"
         << " | " << right << setw(14) << "Stock" << " |\n";
     cout << " +--------------------------------------------------------------------+\n";
+    //use for loop to access of of the medicine list and display each of the information inside the medicine list
     for (int i = 0; i < (int)medicineList.size(); i++) {
         cout << " | " << left << setw(12) << medicineList[i].medicineID
             << "| " << left << setw(22) << medicineList[i].medicineName
@@ -78,14 +87,19 @@ void displayMedicineTable() {
 }
 
 void saveBillsToFile() {
+    //open the txt file to write data
     ofstream outFile("bills.txt");
     if (!outFile.is_open()) {
+        //check if the file open successfully or not
         cout << " [ERROR] Failed to save bill records to file!\n";
         return;
     }
 
+    //Loop through every bill in the bill list
     for (size_t i = 0; i < billList.size(); i++) {
         Bill b = billList[i];
+
+        //Write bill main info, use '|' to separate each data
         outFile << b.billID << "|"
             << b.patientID << "|"
             << b.patientName << "|"
@@ -95,42 +109,54 @@ void saveBillsToFile() {
             << b.finalAmount << "|"
             << b.amountPaid << "|"
             << b.change << "|"
-            << (b.date.empty() ? "N/A" : b.date) << "|"
             << b.status << "|"
-            << b.items.size() << "|";
+            << b.items.size() << "|";        //Save total number of items
 
+        //Loop through each medicine item in this bill
         for (size_t j = 0; j < b.items.size(); j++) {
+            //Write item details, use ',' to separate item fields
             outFile << b.items[j].medicineID << ","
                 << b.items[j].medicineName << ","
                 << b.items[j].quantity << ","
                 << b.items[j].unitPrice << ","
                 << b.items[j].subtotal;
 
+            //Use ';' to separate multiple items but not after the last item
             if (j + 1 < b.items.size()) {
                 outFile << ";";
             }
         }
         outFile << "\n"; 
     }
+
+    //Close the file after finishing saving
     outFile.close();
 }
 
 void loadBillsFromFile() {
+    //open the txt file to read data
     ifstream inFile("bills.txt");
+    //if can not open stop the function
     if (!inFile.is_open()) {
         return;
     }
 
+    //ckean current list to avoid duplication data 
     billList.clear();
     string line;
 
+    //read the file line by line
     while (getline(inFile, line)) {
+        //skip empty line prevent avoid 
         if (line.empty()) continue;
 
+        //Use stringstream to split the line by separators
         stringstream ss(line);
         string itemStr;
         Bill b;
 
+        //Read main bill details separated by '|'
+        //stoi converts string to int, stod converts string to double
         if (getline(ss, itemStr, '|')) b.billID = stoi(itemStr);
         if (getline(ss, itemStr, '|')) b.patientID = stoi(itemStr);
         if (getline(ss, itemStr, '|')) b.patientName = itemStr;
@@ -140,35 +166,43 @@ void loadBillsFromFile() {
         if (getline(ss, itemStr, '|')) b.finalAmount = stod(itemStr);
         if (getline(ss, itemStr, '|')) b.amountPaid = stod(itemStr);
         if (getline(ss, itemStr, '|')) b.change = stod(itemStr);
-        if (getline(ss, itemStr, '|')) b.date = itemStr;
         if (getline(ss, itemStr, '|')) b.status = itemStr;
 
+        //Read how many medicine items are in this bill
         int itemCount = 0;
         if (getline(ss, itemStr, '|')) itemCount = stoi(itemStr);
 
+        //Read the remaining string which contains all medicine items
         string allItems;
         if (getline(ss, allItems)) { 
+            //Use another stringstream to split items separated by ';'
             stringstream itemsSS(allItems);
             string singleItemStr;
 
+            //Loop through each single medicine item
             while (getline(itemsSS, singleItemStr, ';')) {
                 if (!singleItemStr.empty()) {
+                    //Use a third stringstream to split item fields separated by ','
                     stringstream singleSS(singleItemStr);
                     string field;
                     BillItem bi;
 
+                    //Read item details from the comma-separated values
                     if (getline(singleSS, field, ',')) bi.medicineID = stoi(field);
                     if (getline(singleSS, field, ',')) bi.medicineName = field;
                     if (getline(singleSS, field, ',')) bi.quantity = stoi(field);
                     if (getline(singleSS, field, ',')) bi.unitPrice = stod(field);
                     if (getline(singleSS, field, ',')) bi.subtotal = stod(field);
 
+                    //Aadd this item into the bill's item list
                     b.items.push_back(bi);
                 }
             }
         }
+        //add the complete bill into the main bill list
         billList.push_back(b);
     }
+    //close the file after finishing reading
     inFile.close();
 }
 
@@ -253,7 +287,7 @@ void createNewBill() {
     }
     newBill.patientID = p.patientID;
     newBill.patientName = p.patientName;
-    newBill.totalAmount = 0.0;
+    newBill.totalAmount = CONSULTATION_FEE;
     newBill.status = "Unpaid";
 
     while (true) {
@@ -336,8 +370,7 @@ void createNewBill() {
     }
 
     if (newBill.items.empty()) {
-        cout << "\n No items added. Bill cancelled. \n";
-        return;
+        cout << "\n [INFO] No medicines added. This bill will only charge the Basic Consultation Fee (RM 30.00).\n";
     }
 
     newBill.taxAmount = newBill.totalAmount * SST_RATE;
@@ -372,6 +405,7 @@ void createNewBill() {
     }
 
     cout << " +-----------------------------------------------------------+\n";
+    cout << " | Basic Consultation Fee : RM " << right << setw(29) << fixed << setprecision(2) << CONSULTATION_FEE << " |\n";
     cout << " | Total Amount           : RM " << right << setw(29) << fixed << setprecision(2) << newBill.totalAmount << " |\n";
     cout << " | SST Tax (6%)           : RM " << right << setw(29) << newBill.taxAmount << " |\n";
     cout << " | Senior Discount        : RM " << right << setw(29) << newBill.discountAmount << " |\n";
@@ -474,6 +508,7 @@ void makePayment() {
     }
 
     cout << " +-----------------------------------------------------------+\n";
+    cout << " | Basic Consultation Fee : RM " << right << setw(29) << fixed << setprecision(2) << CONSULTATION_FEE << " |\n";
     cout << " | Total Amount           : RM " << right << setw(29) << fixed << setprecision(2) << billList[bIndex].totalAmount << " |\n";
     cout << " | SST Tax (6%)           : RM " << right << setw(29) << billList[bIndex].taxAmount << " |\n";
     cout << " | Senior Discount        : RM " << right << setw(29) << billList[bIndex].discountAmount << " |\n";
@@ -516,7 +551,7 @@ void makePayment() {
 }
 
 //function 3.1 
-void viewAllBills() {
+void viewAllBills(const vector<Bill>& bills) {
     cout << setfill(' ');
 
     cout << "\n +-----------------------------------------------------------------------------------------+\n";
@@ -559,25 +594,25 @@ void viewAllBills() {
 }
 
 //function 3.2 recalculate 
-void recalculateBill(int bIndex) {
+void recalculateBill(Bill& b) {
     //calculate again the bill after edit the bill
-    double newTotal = 0.0;
-    for (int i = 0; i < (int)billList[bIndex].items.size(); i++) {
-        newTotal += billList[bIndex].items[i].subtotal;
+    double newTotal = CONSULTATION_FEE;
+    for (int i = 0; i < (int)b.items.size(); i++) {
+        newTotal += b.items[i].subtotal;
     }
 
-    billList[bIndex].totalAmount = newTotal;
-    billList[bIndex].taxAmount = newTotal * SST_RATE;
+    b.totalAmount = newTotal;
+    b.taxAmount = newTotal * SST_RATE;
 
-    int pAge = getPatientAge(billList[bIndex].patientID);
+    int pAge = getPatientAge(b.patientID);
     if (pAge >= SENIOR_AGE) {
-        billList[bIndex].discountAmount = newTotal * SENIOR_DISCOUNT_RATE;
+        b.discountAmount = newTotal * SENIOR_DISCOUNT_RATE;
     }
     else {
-        billList[bIndex].discountAmount = .0;
+        b.discountAmount = .0;
     }
 
-    billList[bIndex].finalAmount = newTotal + billList[bIndex].taxAmount - billList[bIndex].discountAmount;
+    b.finalAmount = newTotal + b.taxAmount - b.discountAmount;
 }
 
 //function 3.2
@@ -674,7 +709,7 @@ void editBill() {
                 cout << " [SUCCESS] Removed " << billList[bIndex].items[actualIdx].medicineName << " and returned to stock.\n";
                 billList[bIndex].items.erase(billList[bIndex].items.begin() + actualIdx);
 
-                recalculateBill(bIndex);
+                recalculateBill(billList[bIndex]);
                 saveBillsToFile();
             }
 
@@ -723,7 +758,7 @@ void editBill() {
                     billList[bIndex].patientName = patientList[newPIndex].patientName;
 
                     //recalculate because if patient is senior age then it can apply the discount so call the recalculate function)
-                    recalculateBill(bIndex);
+                    recalculateBill(billList[bIndex]);
                     saveBillsToFile();
                     cout << " [SUCCESS] Patient successfully changed to " << billList[bIndex].patientName << ".\n";
                 }
@@ -821,7 +856,7 @@ void billManagementRecords() {
         choice = readInt(" Enter your choice (0-3): ");
 
         if (choice == 1) {
-            viewAllBills();
+            viewAllBills(billList);
         }
         else if (choice == 2) {
             editBill();

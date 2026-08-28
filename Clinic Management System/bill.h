@@ -24,7 +24,6 @@ struct Bill {
     double finalAmount;
     double amountPaid;
     double change;
-    string date;
     string status;
 };
 

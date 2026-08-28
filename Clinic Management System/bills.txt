@@ -1,7 +1,11 @@
-1|1|Tan Wei Da|16.50|0.99|0.00|17.49|20.00|2.51|N/A|Paid|2|1,Panadol,1,6.50,6.50;2,Vitamin C,1,10.00,10.00
-2|2|Wang Chong Liang|13.00|0.78|0.00|13.78|0.00|0.00|N/A|Unpaid|1|1,Panadol,2,6.50,13.00
-3|3|Wang Su Ki|10.00|0.60|0.00|10.60|15.00|4.40|N/A|Paid|1|2,Vitamin C,1,10.00,10.00
-4|4|Bryan Lai Xuan Qi|19.50|1.17|0.00|20.67|50.00|29.33|N/A|Paid|1|1,Panadol,3,6.50,19.50
-5|5|Dennis|20.00|1.20|0.00|21.20|0.00|0.00|N/A|Unpaid|1|2,Vitamin C,2,10.00,20.00
-6|6|Tan Jia Seng|0.00|0.00|0.00|0.00|0.00|0.00|N/A|Cancelled (Doctor absent)|0|
-7|1|Tan Wei Da|6.50|0.39|0.00|6.89|0.00|0.00|N/A|Unpaid|1|1,Panadol,1,6.50,6.50
+1|1|Tan Wei Da|46.5|2.79|0|49.29|50|0.71|Paid|2|1,Panadol,1,6.5,6.5;2,Vitamin C,1,10,10
+2|2|Wang Chong Liang|43|2.58|0|45.58|50|4.42|Paid|1|1,Panadol,2,6.5,13
+3|3|Wang Su Ki|40|2.4|0|42.4|50|7.6|Paid|1|2,Vitamin C,1,10,10
+4|4|Bryan Lai Xuan Qi |49|2.94|0|51.94|52|0.06|Paid|2|1,Panadol,1,6.5,6.5;3,Cough Syrup,1,12.5,12.5
+5|5|Dennis|36.5|2.19|0|38.69|0|0|Unpaid|1|1,Panadol,1,6.5,6.5
+6|6|Tan Jia Seng|30|1.8|0|31.8|35|3.2|Paid|0|
+7|7|Tai Qi Zheng|51|3.06|0|54.06|0|0|Unpaid|2|1,Panadol,2,6.5,13;4,Ibuprofen,1,8,8
+8|8|Lily|32.2|1.93|0|34.13|35|0.87|Paid|1|7,Gastric Pill,1,2.2,2.2
+9|9|Abu|50.4|3.02|0|53.42|53.42|0|Paid|2|6,Cetirizine (Allergy),1,1.5,1.5;8,Eye Drops (Dry Eyes),1,18.9,18.9
+10|1|Tan Wei Da|0|0|0|0|0|0|Cancelled (Doctor absent)|0|
+11|1|Tan Wei Da|30|1.8|0|31.8|35|3.2|Paid|0|
