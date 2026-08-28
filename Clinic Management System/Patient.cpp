@@ -1,3 +1,4 @@
+#include "Patient.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -7,16 +8,6 @@
 #include <limits>
 
 using namespace std;
-
-struct Patient {
-    int patientID;
-    string patientName;
-    int age;
-    string allergy;
-    vector<string> medicalHistory;
-};
-
-extern vector<Patient> patientList;
 
 void registerPatient();
 void addConsultationRecord();

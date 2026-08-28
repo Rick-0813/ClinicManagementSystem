@@ -38,5 +38,11 @@
     <ClInclude Include="bill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Appointment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pharmacy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

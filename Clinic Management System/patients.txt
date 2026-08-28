@@ -1,4 +1,4 @@
-1|Tan Wei Da|19|Penicilliin|1|Initial Registration & Health Profile Created.
+  1|Tan Wei Da|19|Penicilliin|2|Initial Registration & Health Profile Created.;None
 2|Wang Chong Liang|19|01135325883|3|Initial Registration & Health Profile Created.;MC Issued: 2 day(s) by Dr. Tan Hong Kang (Reason: fever);2
 3|Wang Su Ki|9|None|1|Initial Registration & Health Profile Created.
 4|Bryan Lai Xuan Qi |19|none|3|Initial Registration & Health Profile Created.;None;MC Issued: 2 day(s) by Dr. MJ (Reason: Fever)
@@ -6,4 +6,3 @@
 6|Tan Jia Seng|27|None|2|Initial Registration & Health Profile Created.;None
 7|Tai Qi Zheng|26|None|3|Initial Registration & Health Profile Created.;None;MC Issued: 2 day(s) by Dr. MJ (Reason: Fever)
 8|Lily|45|None|1|Initial Registration & Health Profile Created.
-9999|Fortnite Chong Ah Jin|23|PeanutButter|1|Initial Registration & Health Profile Created.

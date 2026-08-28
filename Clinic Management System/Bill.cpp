@@ -1,26 +1,10 @@
 #include "bill.h"
+#include "Pharmacy.h"
+#include "Patient.h"
 #include<sstream>
 #include<iomanip>
 #include <fstream>
 using namespace std;
-
-struct Patient {
-    int patientID;
-    string patientName;
-    int age;
-    string allergy;
-    vector<string> medicalHistory;
-};
-
-struct Medicine {
-    int medicineID;
-    string medicineName;
-    double price;
-    int stockQty;
-};
-
-extern vector<Patient> patientList;
-extern vector<Medicine> medicineList;
 
 const double SST_RATE = 0.06;
 const double SENIOR_DISCOUNT_RATE = 0.10;
@@ -85,7 +69,7 @@ void displayMedicineTable() {
         << " | " << right << setw(14) << "Stock" << " |\n";
     cout << " +--------------------------------------------------------------------+\n";
     for (int i = 0; i < (int)medicineList.size(); i++) {
-        cout << " | " << left << setw(12) << formatMedicineID(medicineList[i].medicineID)
+        cout << " | " << left << setw(12) << medicineList[i].medicineID
             << "| " << left << setw(22) << medicineList[i].medicineName
             << "| " << right << setw(11) << fixed << setprecision(2) << medicineList[i].price
             << " | " << right << setw(14) << medicineList[i].stockQty << " |\n";
@@ -261,7 +245,12 @@ void createNewBill() {
     Patient p = patientList[pIndex];
 
     Bill newBill;
-    newBill.billID = (int)billList.size() + 1;
+    if (billList.empty()) {
+        newBill.billID = 1;
+    }
+    else {
+        newBill.billID = billList.back().billID + 1;
+    }
     newBill.patientID = p.patientID;
     newBill.patientName = p.patientName;
     newBill.totalAmount = 0.0;
@@ -277,7 +266,7 @@ void createNewBill() {
 
         int mIndex = -1;
         for (int i = 0; i < medicineList.size(); i++) {
-            if (medicineList[i].medicineID == mID) {
+            if (medicineList[i].medicineID == formatMedicineID(mID)) {
                 mIndex = i;
                 break;
             }
@@ -301,8 +290,39 @@ void createNewBill() {
             continue;
         }
 
+        //change the medicineName and allergy medicine name to lowercase
+        string medNameLower = toLowerCase(medicineList[mIndex].medicineName);
+        string patientAllergyLower = toLowerCase(p.allergy);
+
+        //check the patient have any allergy to medicine or not
+        if (patientAllergyLower != "none" && !patientAllergyLower.empty()) {
+            //check the medicne given to pateint are allergy to the pateint or not
+            //use. find any allergy medicine given to patient , if no then return srtring:npos
+            // when .find != to npos mean it find the allergy medicine
+            if (medNameLower.find(patientAllergyLower) != string::npos) {
+                cout << "\n [WARNING] =========================================================\n";
+                cout << " [WARNING] ALERT! Patient (" << p.patientName << ") is ALLERGIC to: " << p.allergy << "!\n";
+                cout << " [WARNING] The selected medicine (" << medicineList[mIndex].medicineName << ") might be dangerous!\n";
+                cout << " [WARNING] =========================================================\n";
+
+                char overrideChoice;
+                cout << " Do you still want to force add this medicine? (Y/N): ";
+                cin >> overrideChoice;
+                cin.ignore(1000, '\n');
+
+                //cancel message
+                if (tolower(overrideChoice) != 'y') {
+                    cout << " [INFO] Medicine addition cancelled due to allergy warning.\n";
+                    continue;
+                }
+            }
+        }
+
+
         BillItem item;
-        item.medicineID = medicineList[mIndex].medicineID;
+        //.substr(1) use to remove e.g. M001 -> 001 
+        //stoi change the 001 from string to int
+        item.medicineID = stoi(medicineList[mIndex].medicineID.substr(1));
         item.medicineName = medicineList[mIndex].medicineName;
         item.quantity = qty;
         item.unitPrice = medicineList[mIndex].price;
@@ -321,7 +341,7 @@ void createNewBill() {
     }
 
     newBill.taxAmount = newBill.totalAmount * SST_RATE;
-    if (p.age > SENIOR_AGE) {
+    if (p.age >= SENIOR_AGE) {
         newBill.discountAmount = newBill.totalAmount * SENIOR_DISCOUNT_RATE;
     }
     else {
@@ -439,12 +459,12 @@ void makePayment() {
     string billStr = ss_id.str();
 
     cout << " +-----------------------------------------------------------+\n";
-    cout << " | " << left << setw(57) << ("Bill Details (Bill ID: " + billStr + ")") << " |\n";
+    cout << " | " << setfill(' ') << left << setw(57) << ("Bill Details (Bill ID: " + billStr + ")") << " |\n";
     cout << " +-----------------------------------------------------------+\n";
     cout << " | Patient ID   : " << left << setw(42) << billList[bIndex].patientID << " |\n";
     cout << " | Patient Name : " << left << setw(42) << billList[bIndex].patientName << " |\n";
     cout << " +-----------------------------------------------------------+\n";
-    cout << " | Medicine Name          | Qty   | Unit Price  | Subtotal   |\n";
+    cout << " | Medicine Name          |   Qty |  Unit Price |   Subtotal |\n";
 
     for (int i = 0; i < (int)billList[bIndex].items.size(); i++) {
         cout << " | " << left << setw(22) << billList[bIndex].items[i].medicineName
@@ -488,7 +508,7 @@ void makePayment() {
     cout << " | Final Amount       : RM " << right << setw(33) << fixed << setprecision(2) << billList[bIndex].finalAmount << " |\n";
     cout << " | Total Paid         : RM " << right << setw(33) << billList[bIndex].amountPaid << " |\n";
     cout << " | Change             : RM " << right << setw(33) << billList[bIndex].change << " |\n";
-    cout << " | Status             : " << left << setw(34) << billList[bIndex].status << " |\n";
+    cout << " | Status             : " << left << setw(34) << billList[bIndex].status << "   |\n";
     cout << " +-----------------------------------------------------------+\n";
     cout << " [SUCCESS] Payment completed successfully!\n";
 
@@ -550,7 +570,7 @@ void recalculateBill(int bIndex) {
     billList[bIndex].taxAmount = newTotal * SST_RATE;
 
     int pAge = getPatientAge(billList[bIndex].patientID);
-    if (pAge > SENIOR_AGE) {
+    if (pAge >= SENIOR_AGE) {
         billList[bIndex].discountAmount = newTotal * SENIOR_DISCOUNT_RATE;
     }
     else {
@@ -637,11 +657,18 @@ void editBill() {
                 int returnQty = billList[bIndex].items[actualIdx].quantity;
 
                 //Find the medicine and add the quantity 
-                for (int i = 0; i < (int)medicineList.size(); i++) {
-                    if (medicineList[i].medicineID == mID) {
-                        medicineList[i].stockQty += returnQty;
+                bool foundMed = false;
+                for (int j = 0; j < (int)medicineList.size(); j++) {
+                    if (medicineList[j].medicineID == formatMedicineID(mID)) {
+                        medicineList[j].stockQty += returnQty;
+                        foundMed = true;
                         break;
                     }
+                }
+                //if did not found then show warning message
+                if (!foundMed) {
+                    cout << " [WARNING] Medicine ID " << formatMedicineID(mID)
+                        << " no longer exists in inventory. Stock not restored.\n";
                 }
 
                 cout << " [SUCCESS] Removed " << billList[bIndex].items[actualIdx].medicineName << " and returned to stock.\n";
@@ -667,6 +694,31 @@ void editBill() {
                 }
                 //change the patient ID , Name and recalculate the bill
                 else {
+                    Patient& newP = patientList[newPIndex];
+                    //check the new patient have allergy or not
+                    if (!newP.allergy.empty() && toLowerCase(newP.allergy) != "none") {
+                        //if yes check one by one the medicine inside the items
+                        for (int i = 0; i < (int)billList[bIndex].items.size(); i++) {
+                            //check the medicne given to pateint are allergy to the pateint or not
+                            //use. find any allergy medicine given to patient , if no then return srtring:npos
+                            // when .find != to npos mean it find the allergy medicine
+                            if (toLowerCase(billList[bIndex].items[i].medicineName).find(toLowerCase(newP.allergy)) != string::npos) {
+                                cout << " [WARNING] " << newP.patientName << " is allergic to " << newP.allergy
+                                    << ", but bill contains " << billList[bIndex].items[i].medicineName << "!\n";
+
+                                char overrideChoice;
+                                cout << " Do you still want to change the bill ? (Y/N): ";
+                                cin >> overrideChoice;
+                                cin.ignore(1000, '\n');
+
+                                //cancel message
+                                if (tolower(overrideChoice) != 'y') {
+                                    cout << " [INFO] Medicine addition cancelled due to allergy warning.\n";
+                                    continue;
+                                }
+                            }
+                        }
+                    }
                     billList[bIndex].patientID = patientList[newPIndex].patientID;
                     billList[bIndex].patientName = patientList[newPIndex].patientName;
 
@@ -733,7 +785,7 @@ void deleteBill() {
             int mID = billList[bIndex].items[i].medicineID;
             int returnQty = billList[bIndex].items[i].quantity;
             for (int j = 0; j < (int)medicineList.size(); j++) {
-                if (medicineList[j].medicineID == mID) {
+                if (medicineList[j].medicineID == formatMedicineID(mID)) {
                     medicineList[j].stockQty += returnQty;
                     break;
                 }
@@ -786,7 +838,7 @@ void billManagementRecords() {
     } while (choice != 0);
 }
 
-void billMenu() {
+void billMenu()  {
 
     int choice;
     do {

@@ -1,4 +1,5 @@
 #include "Appointment.h"
+#include "Patient.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -8,21 +9,9 @@
 
 using namespace std;
 
-struct Patient {
-    int patientID;
-    string patientName;
-    int age;
-    string allergy;
-    vector<string> medicalHistory;
-};
-extern vector<Patient> patientList;
-
 vector<string> doctorList;
 void loadDoctorsFromFile();
 const vector<string> CLINIC_TIMES = { "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00" };
-
-extern vector<Appointment> appointmentList;
-extern vector<Patient> patientList;
 
 void makeAppointment();
 void rescheduleAppointment();
@@ -115,6 +104,11 @@ bool isValidDate(const string& date) {
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
     if (year < 2026) return false; 
+
+    //use to check leapYear
+    int daysInMonth[] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+    bool isLeap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    if (month == 2 && isLeap) daysInMonth[1] = 29;
 
     return true;
 } 
@@ -332,7 +326,6 @@ void rescheduleAppointment() {
                 appointmentList[i].status != "Cancelled") {
 
                 isSlotTaken = true;
-                cout << " [ERROR] Dr. " << appointmentList[apptIndex].doctorName << " is already booked at that time! Please choose another slot.\n\n";
                 break;
             }
         }
