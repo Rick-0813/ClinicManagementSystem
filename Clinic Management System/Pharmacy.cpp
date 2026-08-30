@@ -324,9 +324,9 @@ void medicineUsageReport() {
     cout << "\n +-----------------------------------------------------------+\n";
     cout << " | Sales Report for: " << left << setw(39) << temp.medicineName << " |\n";
     cout << " +-----------------------------------------------------------+\n";
-    cout << " | Current Stock in Clinic : " << right << setw(27) << temp.stockQty << " |\n";
-    cout << " | Total Quantity Sold     : " << right << setw(27) << totalSold << " |\n";
-    cout << " | Total Revenue Generated : RM " << right << setw(24) << fixed << setprecision(2) << totalRevenue << " |\n";
+    cout << " | Current Stock in Clinic : " << right << setw(31) << temp.stockQty << " |\n";
+    cout << " | Total Quantity Sold     : " << right << setw(31) << totalSold << " |\n";
+    cout << " | Total Revenue Generated : RM " << right << setw(28) << fixed << setprecision(2) << totalRevenue << " |\n";
     cout << " +-----------------------------------------------------------+\n";
 }
 
@@ -363,13 +363,14 @@ void pharmacyMenu() {
         cout << " |  [2] View All Medicines                                                                                                    |\n";
         cout << " |  [3] Update Medicine Stock/Price                                                                                           |\n";
         cout << " |  [4] Delete Medicine                                                                                                       |\n";
-        cout << " |  [5] Medicine Sales & Usage Report                                                                                         |\n";
-        cout << " |  [6] Return to Main Menu                                                                                                   |\n";
+        cout << " |  [5] Search Medicine                                                                                                       |\n";
+        cout << " |  [6] Medicine Sales & Usage Report                                                                                         |\n";
+        cout << " |  [7] Return to Main Menu                                                                                                   |\n";
         cout << " +============================================================================================================================+\n";
 
-        cout << " Enter your choice (1-5): ";
-        while (!(cin >> choice) || choice < 1 || choice > 6) {
-            cout << " [ERROR] Invalid choice! Please enter a number between 1 and 5: ";
+        cout << " Enter your choice (1-7): ";
+        while (!(cin >> choice) || choice < 1 || choice > 7) {
+            cout << " [ERROR] Invalid choice! \n Please enter a number between 1 and 7: ";
             cin.clear();
             cin.ignore(1000, '\n');
         }
@@ -393,14 +394,18 @@ void pharmacyMenu() {
             deleteMedicineUI();
             pauseScreen();
             break;
-        case 5 : 
+        case 5:
+            searchMedicineByID();
+            pauseScreen();
+            break;
+        case 6 : 
             medicineUsageReport();
             pauseScreen();
             break;
-        case 6:
+        case 7:
             break;
         }
-    } while (choice != 6);
+    } while (choice != 7);
 }
 
 void saveMedicinesToFile() {

@@ -71,7 +71,7 @@ int main() {
     loadAppointmentsFromFile();
     loadBillsFromFile();
     loadMedicinesFromFile();
-    void loadDoctorsFromFile();
+    loadDoctorsFromFile();
 
     int choice;
 

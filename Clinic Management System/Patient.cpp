@@ -36,7 +36,7 @@ void patientMenu() {
         cout << " | [6] Back to Main Menu                   |\n";
         cout << " +-----------------------------------------+\n";
 
-        choice = getValidatedInt(" Enter your choice (1-5): ", 1, 5);
+        choice = getValidatedInt(" Enter your choice (1-6): ", 1, 6);
         cout << "\n";
 
         switch (choice) {
@@ -93,7 +93,7 @@ int getValidatedInt(string prompt, int minVal, int maxVal) {
             return value;
         }
         cout << " [ERROR] Invalid input! Please enter a valid number between " 
-             << setfill('0') << setw(4) << minVal << " and " << setw(4) << maxVal << setfill(' ') << ".\n";
+             << setw(4) << minVal << " and " << setw(4) << maxVal << setfill(' ') << ".\n";
         cin.clear();
         cin.ignore(1000, '\n');
     }
@@ -237,9 +237,9 @@ void addConsultationRecord() {
     for (size_t i = 0; i < patient->medicalHistory.size(); i++) {
 
         cout << " | [" << i + 1 << "] "
-            << left << setw(34)
+            << left << setw(50)
             << patient->medicalHistory[i]
-            << "     |\n";
+            << " |\n";
     }
     cout << " +--------------------------------------------------------+\n";
 

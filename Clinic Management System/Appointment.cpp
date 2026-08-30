@@ -44,7 +44,12 @@ void loadAppointmentsFromFile() {
         if (getline(ss, itemStr, '|')) appt.doctorName = itemStr;
         if (getline(ss, itemStr, '|')) appt.date = itemStr;
         if (getline(ss, itemStr, '|')) appt.time = itemStr;
-        if (getline(ss, itemStr, '|')) appt.status = itemStr;
+        if (getline(ss, itemStr, '|')) {
+            while (!itemStr.empty() && (itemStr.back() == '\r' || itemStr.back() == '\n' || itemStr.back() == ' ')) {
+                itemStr.pop_back();
+            }
+            appt.status = itemStr;
+        }
 
         appointmentList.push_back(appt);
     }
@@ -165,7 +170,7 @@ void appointmentMenu() {
         cout << " | [6] Return to Main Menu                 |\n";
         cout << " +-----------------------------------------+\n";
 
-        choice = getValidatedInt(" Enter your choice (1-5): ", 1, 5);
+        choice = getValidatedInt(" Enter your choice (1-6): ", 1, 6);
 
         switch (choice) {
         case 1:
@@ -364,6 +369,11 @@ void cancelAppointment() {
 
     if (appointmentList[apptIndex].status == "Cancelled") {
         cout << " [ERROR] This appointment is already Cancelled!\n";
+        return;
+    }
+
+    if (appointmentList[apptIndex].status == "Completed") {
+        cout << " [ERROR] Cannot cancel an appointment that is already Completed!\n";
         return;
     }
 
